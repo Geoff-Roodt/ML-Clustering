@@ -16,6 +16,7 @@ namespace Clustering
         static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "IrisClusteringModel.zip");
 
         PredictionModel<IrisData, ClusterPrediction> Model;
+        IrisData Input;
 
         public Main()
         {
@@ -24,7 +25,7 @@ namespace Clustering
 
         private void Main_Load(object sender, EventArgs e)
         {
-
+            Input = new IrisData();
         }
 
         private static PredictionModel<IrisData, ClusterPrediction> Train()
@@ -42,16 +43,101 @@ namespace Clustering
             return pipeLine.Train<IrisData, ClusterPrediction>();
         }
 
+        private void ValidateControls()
+        {
+            if (!string.IsNullOrWhiteSpace(txtPtlLgth.Text) && !string.IsNullOrWhiteSpace(txtPtlWdth.Text) && !string.IsNullOrWhiteSpace(txtSplLgth.Text) && !string.IsNullOrWhiteSpace(txtSplWdth.Text))
+            {
+                btnPredict.Enabled = true;
+            }
+        }
+
+
+        #region Events
+
         private void btnTrainMdl_Click(object sender, EventArgs e)
         {
             Model = Train();
             if (Model != null)
             {
+                // We can save the model to be imported and used later in more .NET apps
                 Model.WriteAsync(_modelPath);
             }
-            else {
+            else
+            {
                 throw new NullReferenceException("The model failed to be trained");
             }
+
+            txtSplLgth.Enabled = true;
+            txtSplWdth.Enabled = true;
+            txtPtlLgth.Enabled = true;
+            txtPtlWdth.Enabled = true;
         }
+
+        private void btnPredict_Click(object sender, EventArgs e)
+        {
+            if (Input == null)
+            {
+                Input = new IrisData();
+            }
+
+            Input.PetalLength = float.Parse(txtPtlLgth.Text);
+            Input.PetalWidth = float.Parse(txtPtlWdth.Text);
+            Input.SepalLength = float.Parse(txtSplLgth.Text);
+            Input.SepalWidth = float.Parse(txtSplWdth.Text);
+
+            ClusterPrediction prediction = Model.Predict(Input);
+
+
+            txtPredictions.Text += $"\r\n\r\nPetal Length: {txtPtlLgth.Text}cm";
+            txtPredictions.Text += $"\r\nPetal Width: {txtPtlWdth.Text}cm";
+            txtPredictions.Text += $"\r\nSepal Length: {txtSplLgth.Text}cm";
+            txtPredictions.Text += $"\r\nSepal Width: {txtSplWdth.Text}cm";
+            txtPredictions.Text += $"\r\n{new string('-', 30)}";
+            txtPredictions.Text += $"\r\nCluster: {prediction.PredictedClusterId}";
+            txtPredictions.Text += $"\r\nDistances: {string.Join(" ", prediction.Distances)}";
+            txtPredictions.Text += $"\r\n{new string('*', 50)}";
+        }
+
+        private void txtPtlLgth_TextChanged(object sender, EventArgs e)
+        {
+            ValidateControls();
+        }
+
+        private void txtPtlWdth_TextChanged(object sender, EventArgs e)
+        {
+            ValidateControls();
+        }
+
+        private void txtSplLgth_TextChanged(object sender, EventArgs e)
+        {
+            ValidateControls();
+        }
+
+        private void txtSplWdth_TextChanged(object sender, EventArgs e)
+        {
+            ValidateControls();
+        }
+
+        private void txtSplWdth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void txtSplLgth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void txtPtlWdth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        private void txtPtlLgth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !Char.IsDigit(e.KeyChar);
+        }
+
+        #endregion
     }
 }
