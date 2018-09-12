@@ -59,7 +59,7 @@
             this.btnTrainMdl.TabIndex = 0;
             this.btnTrainMdl.Text = "Train Model";
             this.btnTrainMdl.UseVisualStyleBackColor = true;
-            this.btnTrainMdl.Click += new System.EventHandler(this.btnTrainMdl_Click);
+            this.btnTrainMdl.Click += new System.EventHandler(this.btnTrainMdl_ClickAsync);
             // 
             // pnlData
             // 

@@ -28,8 +28,18 @@ namespace Clustering
             Input = new IrisData();
         }
 
-        private static PredictionModel<IrisData, ClusterPrediction> Train()
+        private async Task<PredictionModel<IrisData, ClusterPrediction>> Train()
         {
+            // if our model has already been trained, return that
+            if (File.Exists(_modelPath))
+            {
+                PredictionModel<IrisData, ClusterPrediction> trainedModel = await PredictionModel.ReadAsync<IrisData, ClusterPrediction>(_modelPath);
+                if (trainedModel != null)
+                {
+                    return trainedModel;
+                }
+            }
+
             // Pipelines are necessary to load the data and train the model against specific features
             LearningPipeline pipeLine = new LearningPipeline();
             pipeLine.Add(new TextLoader(_dataPath).CreateFrom<IrisData>(separator: ','));
@@ -40,7 +50,18 @@ namespace Clustering
             //https://en.wikipedia.org/wiki/K-means_clustering
             pipeLine.Add(new KMeansPlusPlusClusterer() { K = 3 });
 
-            return pipeLine.Train<IrisData, ClusterPrediction>();
+            Model = pipeLine.Train<IrisData, ClusterPrediction>();
+            if (Model != null)
+            {
+                // We can save the model to be imported and used later in more .NET apps
+                await Model.WriteAsync(_modelPath);
+                return Model;
+            }
+            else
+            {
+                throw new NullReferenceException("The model failed to be trained");
+            }
+
         }
 
         private void ValidateControls()
@@ -54,23 +75,15 @@ namespace Clustering
 
         #region Events
 
-        private void btnTrainMdl_Click(object sender, EventArgs e)
+        private async void btnTrainMdl_ClickAsync(object sender, EventArgs e)
         {
-            Model = Train();
-            if (Model != null)
-            {
-                // We can save the model to be imported and used later in more .NET apps
-                Model.WriteAsync(_modelPath);
-            }
-            else
-            {
-                throw new NullReferenceException("The model failed to be trained");
-            }
+            await Train();
 
             txtSplLgth.Enabled = true;
             txtSplWdth.Enabled = true;
             txtPtlLgth.Enabled = true;
             txtPtlWdth.Enabled = true;
+            btnTrainMdl.Enabled = false;
         }
 
         private void btnPredict_Click(object sender, EventArgs e)
