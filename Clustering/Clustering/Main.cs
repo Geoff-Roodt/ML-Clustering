@@ -6,6 +6,8 @@ using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
+using System.Collections.Generic;
+using CsvHelper;
 
 namespace Clustering
 {
@@ -13,10 +15,13 @@ namespace Clustering
     {
         // Note the filepaths to locate the training data set, and to store the trained model
         static readonly string _dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "iris.data");
+        static readonly string _dataFile = Path.Combine(Environment.CurrentDirectory, "Data", "iris.csv");
         static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "IrisClusteringModel.zip");
 
         PredictionModel<IrisData, ClusterPrediction> Model;
         IrisData Input;
+        IEnumerable<TrainedData> TrainedData;
+        List<ClusterPrediction> ClusterPredictions;
 
         public Main()
         {
@@ -26,6 +31,8 @@ namespace Clustering
         private void Main_Load(object sender, EventArgs e)
         {
             Input = new IrisData();
+            ClusterPredictions = new List<ClusterPrediction>();
+            TrainedData = new List<TrainedData>();
         }
 
         private async Task<PredictionModel<IrisData, ClusterPrediction>> Train()
@@ -72,6 +79,13 @@ namespace Clustering
             }
         }
 
+        private void GenerateClusters()
+        {
+            using (TextReader reader = File.OpenText(_dataFile)) {
+                CsvReader csv = new CsvReader(reader);
+                TrainedData = csv.GetRecords<TrainedData>();
+            }
+        }
 
         #region Events
 
@@ -152,5 +166,10 @@ namespace Clustering
         }
 
         #endregion
+
+        private void btnViewCluster_Click(object sender, EventArgs e)
+        {
+            GenerateClusters();
+        }
     }
 }
