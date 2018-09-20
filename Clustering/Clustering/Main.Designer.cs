@@ -249,6 +249,7 @@
             // 
             // btnViewCluster
             // 
+            this.btnViewCluster.Enabled = false;
             this.btnViewCluster.Location = new System.Drawing.Point(249, 26);
             this.btnViewCluster.Name = "btnViewCluster";
             this.btnViewCluster.Size = new System.Drawing.Size(116, 41);

@@ -20,7 +20,7 @@ namespace Clustering
 
         PredictionModel<IrisData, ClusterPrediction> Model;
         IrisData Input;
-        IEnumerable<TrainedData> TrainedData;
+        IEnumerable<IrisData> TrainedData;
         List<ClusterPrediction> ClusterPredictions;
 
         public Main()
@@ -32,7 +32,7 @@ namespace Clustering
         {
             Input = new IrisData();
             ClusterPredictions = new List<ClusterPrediction>();
-            TrainedData = new List<TrainedData>();
+            TrainedData = new List<IrisData>();
         }
 
         private async Task<PredictionModel<IrisData, ClusterPrediction>> Train()
@@ -81,11 +81,35 @@ namespace Clustering
 
         private void GenerateClusters()
         {
-            using (TextReader reader = File.OpenText(_dataFile)) {
+            using (TextReader reader = File.OpenText(_dataFile))
+            {
                 CsvReader csv = new CsvReader(reader);
-                TrainedData = csv.GetRecords<TrainedData>();
+                TrainedData = new List<IrisData>(csv.GetRecords<IrisData>());                
+            }
+
+            foreach(IrisData iris in TrainedData)
+            {
+                ClusterPredictions.Add(PredictIris(iris));
             }
         }
+
+        private ClusterPrediction PredictIris(float SepalLength, float SepalWidth, float PetalLength, float PetalWidth)
+        {
+            IrisData iris = new IrisData
+            {
+                SepalLength = SepalLength,
+                SepalWidth = SepalWidth,
+                PetalLength = PetalLength,
+                PetalWidth = PetalWidth
+            };
+            return PredictIris(iris);
+        }
+
+        private ClusterPrediction PredictIris(IrisData iris)
+        {
+            return Model.Predict(iris);
+        }
+
 
         #region Events
 
@@ -97,6 +121,7 @@ namespace Clustering
             txtSplWdth.Enabled = true;
             txtPtlLgth.Enabled = true;
             txtPtlWdth.Enabled = true;
+            btnPredict.Enabled = true;
             btnTrainMdl.Enabled = false;
         }
 
@@ -112,8 +137,7 @@ namespace Clustering
             Input.SepalLength = float.Parse(txtSplLgth.Text);
             Input.SepalWidth = float.Parse(txtSplWdth.Text);
 
-            ClusterPrediction prediction = Model.Predict(Input);
-
+            ClusterPrediction prediction = PredictIris(Input);
 
             txtPredictions.Text += $"\r\n\r\nPetal Length: {txtPtlLgth.Text}cm";
             txtPredictions.Text += $"\r\nPetal Width: {txtPtlWdth.Text}cm";

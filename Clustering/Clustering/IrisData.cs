@@ -5,16 +5,16 @@ namespace Clustering
     public class IrisData
     {
         [Column("0")]
-        public float SepalLength;
+        public float SepalLength { get; set; }
 
         [Column("1")]
-        public float SepalWidth;
+        public float SepalWidth { get; set; }
 
         [Column("2")]
-        public float PetalLength;
+        public float PetalLength { get; set; }
 
         [Column("3")]
-        public float PetalWidth;
+        public float PetalWidth { get; set; }
 
     }
 }
