@@ -8,6 +8,9 @@ using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
 using System.Collections.Generic;
 using CsvHelper;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Clustering
 {
@@ -43,6 +46,7 @@ namespace Clustering
                 PredictionModel<IrisData, ClusterPrediction> trainedModel = await PredictionModel.ReadAsync<IrisData, ClusterPrediction>(_modelPath);
                 if (trainedModel != null)
                 {
+                    Model = trainedModel;
                     return trainedModel;
                 }
             }
@@ -91,6 +95,35 @@ namespace Clustering
             {
                 ClusterPredictions.Add(PredictIris(iris));
             }
+
+            PaintClusters();
+        }
+
+        private void PaintClusters()
+        {
+            try
+            {
+                ClusterPredictions.Sort((x, y) => x.PredictedClusterId.CompareTo(y.PredictedClusterId));
+                
+                ObservableCollection<MindFusion.Charting.Series> series = new ObservableCollection<MindFusion.Charting.Series>();
+                series.Add( new IrisClusterSeries(ClusterPredictions));
+
+                scatterChart1.Series = series;
+
+                //foreach (ClusterPrediction prediction in ClusterPredictions)
+                //{
+                //    Series item = new Series
+                //    {
+                //        YValuesPerPoint = 3
+                //    };
+                //    item.Points.AddXY(prediction.PredictedClusterId, new[] { prediction.Distances[0], prediction.Distances[1], prediction.Distances[2] });
+                    
+                //}
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         private ClusterPrediction PredictIris(float SepalLength, float SepalWidth, float PetalLength, float PetalWidth)
@@ -113,6 +146,12 @@ namespace Clustering
 
         #region Events
 
+        private void btnViewCluster_Click(object sender, EventArgs e)
+        {
+            GenerateClusters();
+            scatterChart1.Visible = true;
+        }
+
         private async void btnTrainMdl_ClickAsync(object sender, EventArgs e)
         {
             await Train();
@@ -121,7 +160,7 @@ namespace Clustering
             txtSplWdth.Enabled = true;
             txtPtlLgth.Enabled = true;
             txtPtlWdth.Enabled = true;
-            btnPredict.Enabled = true;
+            btnViewCluster.Enabled = true;
             btnTrainMdl.Enabled = false;
         }
 
@@ -191,9 +230,5 @@ namespace Clustering
 
         #endregion
 
-        private void btnViewCluster_Click(object sender, EventArgs e)
-        {
-            GenerateClusters();
-        }
     }
 }

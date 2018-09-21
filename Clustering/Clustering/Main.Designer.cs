@@ -48,13 +48,14 @@
             this.txtPredictions = new System.Windows.Forms.TextBox();
             this.lblPredictions = new System.Windows.Forms.Label();
             this.btnViewCluster = new System.Windows.Forms.Button();
+            this.scatterChart1 = new MindFusion.Charting.WinForms.ScatterChart();
             this.pnlData.SuspendLayout();
             this.pnlInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnTrainMdl
             // 
-            this.btnTrainMdl.Location = new System.Drawing.Point(110, 26);
+            this.btnTrainMdl.Location = new System.Drawing.Point(110, 79);
             this.btnTrainMdl.Name = "btnTrainMdl";
             this.btnTrainMdl.Size = new System.Drawing.Size(116, 41);
             this.btnTrainMdl.TabIndex = 0;
@@ -78,7 +79,7 @@
             this.pnlData.Controls.Add(this.lblPtlLgth);
             this.pnlData.Controls.Add(this.lblSplWdth);
             this.pnlData.Controls.Add(this.lblSplLgth);
-            this.pnlData.Location = new System.Drawing.Point(12, 73);
+            this.pnlData.Location = new System.Drawing.Point(12, 260);
             this.pnlData.Name = "pnlData";
             this.pnlData.Size = new System.Drawing.Size(353, 337);
             this.pnlData.TabIndex = 1;
@@ -225,7 +226,7 @@
             this.pnlInfo.Controls.Add(this.lblPredictions);
             this.pnlInfo.Location = new System.Drawing.Point(371, 73);
             this.pnlInfo.Name = "pnlInfo";
-            this.pnlInfo.Size = new System.Drawing.Size(417, 241);
+            this.pnlInfo.Size = new System.Drawing.Size(417, 152);
             this.pnlInfo.TabIndex = 2;
             // 
             // txtPredictions
@@ -234,7 +235,7 @@
             this.txtPredictions.Multiline = true;
             this.txtPredictions.Name = "txtPredictions";
             this.txtPredictions.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtPredictions.Size = new System.Drawing.Size(359, 179);
+            this.txtPredictions.Size = new System.Drawing.Size(359, 83);
             this.txtPredictions.TabIndex = 16;
             // 
             // lblPredictions
@@ -250,7 +251,7 @@
             // btnViewCluster
             // 
             this.btnViewCluster.Enabled = false;
-            this.btnViewCluster.Location = new System.Drawing.Point(249, 26);
+            this.btnViewCluster.Location = new System.Drawing.Point(110, 191);
             this.btnViewCluster.Name = "btnViewCluster";
             this.btnViewCluster.Size = new System.Drawing.Size(116, 41);
             this.btnViewCluster.TabIndex = 3;
@@ -258,11 +259,36 @@
             this.btnViewCluster.UseVisualStyleBackColor = true;
             this.btnViewCluster.Click += new System.EventHandler(this.btnViewCluster_Click);
             // 
+            // scatterChart1
+            // 
+            this.scatterChart1.LegendTitle = "Legend";
+            this.scatterChart1.Location = new System.Drawing.Point(371, 260);
+            this.scatterChart1.Name = "scatterChart1";
+            this.scatterChart1.Padding = new System.Windows.Forms.Padding(5);
+            this.scatterChart1.ShapeSize = 10D;
+            this.scatterChart1.ShowLegend = true;
+            this.scatterChart1.ShowScatter = true;
+            this.scatterChart1.ShowZoomWidgets = true;
+            this.scatterChart1.Size = new System.Drawing.Size(699, 383);
+            this.scatterChart1.SubtitleFontName = null;
+            this.scatterChart1.SubtitleFontSize = null;
+            this.scatterChart1.SubtitleFontStyle = null;
+            this.scatterChart1.TabIndex = 4;
+            this.scatterChart1.Text = "scatterChart1";
+            this.scatterChart1.Theme.UniformSeriesFill = new MindFusion.Drawing.SolidBrush("#FF90EE90");
+            this.scatterChart1.Theme.UniformSeriesStroke = new MindFusion.Drawing.SolidBrush("#FF000000");
+            this.scatterChart1.Theme.UniformSeriesStrokeThickness = 2D;
+            this.scatterChart1.TitleFontName = null;
+            this.scatterChart1.TitleFontSize = null;
+            this.scatterChart1.TitleFontStyle = null;
+            this.scatterChart1.Visible = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1082, 689);
+            this.Controls.Add(this.scatterChart1);
             this.Controls.Add(this.btnViewCluster);
             this.Controls.Add(this.pnlInfo);
             this.Controls.Add(this.pnlData);
@@ -300,6 +326,7 @@
         private System.Windows.Forms.Label lblPredictions;
         private System.Windows.Forms.TextBox txtPredictions;
         private System.Windows.Forms.Button btnViewCluster;
+        private MindFusion.Charting.WinForms.ScatterChart scatterChart1;
     }
 }
 
